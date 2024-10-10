@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.22.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.2.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.20.8"></script>   
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    const spec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "width": 1000,
+      "height": 400,
+      "data": {
+        "url": "./data/lfs_month.csv",  // Make sure this path is correct
+        "format": {"type": "csv"}
+      },
+      "transform": [
+        {
+          "fold": [
+            "lf", "lf_employed", "lf_unemployed", "lf_outside"  // Only top half variables for now
+          ], 
+          "as": ["category", "value"]
+        }
+      ],
+      "mark": {"type": "area", "interpolate": "monotone"},
+      "encoding": {
+        "x": {
+          "field": "date", 
+          "type": "temporal", 
+          "axis": {"format": "%b %Y", "title": "Date"}
+        },
+        "y": {
+          //"aggregate": "sum", 
+          "field": "value", 
+          "type": "quantitative",
+          "stack": "null",  // Stack the values to create the stream effect
+          "axis": {"title": "Labor Force Metrics"}
+        },
+        "color": {
+          "field": "category",
+          "type": "nominal",
+          "scale": {"scheme": "category20b"},  // Color scheme for top section
+          "legend": {"title": "Category"}
+        }
+      }
+    };
+
+    vegaEmbed("#vis", spec).then(console.log).catch(console.warn);
+  </script>
+</body>
+</html>

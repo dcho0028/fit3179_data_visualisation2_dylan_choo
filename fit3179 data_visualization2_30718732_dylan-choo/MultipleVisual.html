@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Multiple Visualizations Example</title>
+  <!-- Import Vega & Vega-Lite -->
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.20.2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.1.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.17.0"></script>
+
+  <!-- Import pure.css for grid layout -->
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css">
+
+  <!-- Optional: Add custom styles for better control -->
+  <style>
+    .page {
+      padding: 20px;
+    }
+
+    .pure-g {
+      margin-bottom: 20px;
+    }
+
+    .vis-container {
+      padding: 10px;
+    }
+    h1 {
+        font-size: 24px;
+        border-bottom: 2px solid #021420; /* Add a border at the bottom */
+        padding-bottom: 8px;
+
+    }
+
+    h2 {
+      font-size: 18px;
+      font-family: 'Arial', sans-serif;
+      border-bottom: 2px solid #021420; /* Add a border at the bottom */
+      padding-bottom: 5px;
+    }
+
+    .visual-section {
+    
+      margin-bottom: 40px;
+    }
+
+    /* Customize visual sizes */
+    .visual-large {
+      width: 100%;
+      height: 400px;
+    }
+
+    .visual-medium {
+      width: 100%;
+      height: 300px;
+    }
+
+    .description {
+      background-color: #f1f1f1; /* Light grey background */
+      padding: 10px;
+    }
+
+    .description p {
+      font-size: 14px; /* Adjust the paragraph font size */
+      font-family: 'New Times Roman', sans-serif; /* Change the font style */
+      margin: 0;
+      
+    }
+
+    .pure-u-1-3 {
+      padding: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page">
+      <!-- Top Title Section -->
+  <div class="title-section">
+    <h1>Household Income and Poverty Rates in Malaysia with the current population: 2022 Analysis</h1>
+    <p>This set of visualizations provides insights into the household income trends, expenditure by districts, and labor force statistics in Malaysia mainly in the year 2022.
+        This visualisation will explore the relationship between household income and poverty rates across different regions of Malaysia. 
+        This could help highlight which areas face higher levels of poverty despite having higher or lower incomes.
+    </p>
+  </div>
+
+    <!-- Top Section: One visual, description on the left -->
+    <div class="pure-g visual-section">
+      <div class="pure-u-1-5">
+        <div class="description">
+          <h2>Population by age and ethnicity in Malaysia the year 2022
+          </h2>
+          <p>This visualization shows the population of Malaysia showcasing how many people age 
+            between that certain range age which can help into showcasing the prime age for people to work
+            and have household income.
+          </p>
+        </div>
+      </div>
+      <div class="pure-u-1-2">
+        <div id="vis1" class="vis-container visual-large"></div>
+      </div>
+    </div>
+
+    <!-- Middle Section: Two visuals side by side -->
+    <div class="pure-g visual-section">
+      <div class="pure-u-1-2">
+        <div class="description">
+          <h2>Household Mean Income by State in Malaysia 2022</h2>
+          <p>This map shows household mean income, median income and expenditure by state.
+            With the showcase filter of having to see which state in Malaysia have the most mean income. Moreover on the right,
+            it showcases the district of the given 14 states in the country Malaysia showing the much more breakdown of mean income 
+            in the state with the representing districts. With the filtering option below it allows the user to select which state with their 
+            districts have that given mean and median incomes.
+          </p>
+        </div>
+        <div id="vis2" class="vis-container visual-medium"></div>
+      </div>
+      <div class="pure-u-1-2">
+        <div class="description">
+          <h2>Household mean and median income by states and district in Malaysia 2022</h2>
+          
+        </div>
+        <div id="vis3" class="vis-container visual-medium"></div>
+      </div>
+    </div>
+
+    <!-- Bottom Section: Two more visuals side by side -->
+    <div class="pure-g visual-section">
+      <div class="pure-u-1-2">
+        <div class="description">
+          <h2>Mean and median income of Malaysians from the year 1970-2022</h2>
+          <p>This graph showcases the income mean and median of Malaysian househole
+            thorughout the year 1970 to 2022 .</p>
+        </div>
+        <div id="vis4" class="vis-container visual-medium"></div>
+      </div>
+      <div class="pure-u-1-2">
+        <div class="description">
+          <h2>Poverty rate of Malaysians from the year 1970-2022</h2>
+          <p>This graph showcases the poverty rate of Malaysians househole thorughout the years 
+            of 1970 to 2022.This showcase the trends and poverty in Malaysian household to see the
+            rate of how many people are poor. </p>
+        </div>
+        <div id="vis5" class="vis-container visual-medium"></div>
+      </div>
+    </div>
+
+    <!-- Final Section: One visual with description -->
+    <div class="pure-g visual-section">
+      <div class="pure-u-1-2">
+        <div class="description">
+          <h2>Labour forces in Malaysia</h2>
+          <p>This graph showcases the labour forces presented in Malaysia.With the rates of poverty and income 
+            infomation given above the labour force in Malaysia needed to be showned to 
+            see the comparison of the mlaysian population working which could contribute to the 
+            data of malaysians income rate and their poverty rate which shows how many malaysians
+            are working to have a good income and how many are not working falls into poverty.
+          </p>
+      </div>
+      <div class="pure-u-1-2">
+        <div id="vis6" class="vis-container visual-large"></div>
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="text/javascript">
+
+    // Bar line chart 
+
+    // Visualization 1: Bar chart + Line graph for income
+    const spec1 = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "Population by Age, Ethnicity, and Sex",
+  "width": 800,
+  "height": 400,
+  "data": {
+    "url": "./data/2022_population_malaysia.csv"
+  },
+  "transform": [
+  {
+    "filter": "datum.age != 'overall'"
+  },
+    {
+      "aggregate": [
+        {
+          "op": "sum",
+          "field": "population",
+          "as": "total_population"
+        }
+      ],
+      "groupby": ["age", "ethnicity", "sex"]
+    },
+    {
+      "calculate": "datum.total_population > 13000 ? 13000 : datum.total_population",
+      "as": "display_population"
+    }
+  ],
+  "mark": "bar",
+  "encoding": {
+    "x": {
+    "field": "age",
+    "type": "nominal",
+    "sort": [
+      "0-4", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34", "35-39", 
+      "40-44", "45-49", "50-54", "55-59", "60-64", "65-69", "70-74", "75-79", "80+"
+    ],
+    "title": "Age"
+  },
+    "y": {
+      "field": "display_population",
+      "type": "quantitative",
+      "title": "Total Population ('000)",
+      "scale": {
+        "domain": [0, 13000]
+      }
+    },
+    "color": {
+      "field": "sex",
+      "type": "nominal",
+      "title": "Sex",
+      "scale": {
+        "range": ["#FF5733", "#33FF57", "#3357FF"]
+      }
+    },
+    
+    "tooltip": [
+      {"field": "age", "title": "Age"},
+      {"field": "ethnicity", "title": "Ethnicity"},
+      {"field": "sex", "title": "Gender"},
+      {"field": "display_population", "title": "Population"}
+    ]
+  },
+  "config": {
+    "axis": {
+      "labelFontSize": 12,
+      "titleFontSize": 14
+    }
+  }
+};
+
+    //bubbleplot
+
+    // Visualization 2: Placeholder for your second visualization
+    const spec2 = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "title": "Household Income and Expenditure of states in Malaysia",
+      "width": 600,
+      "height": 500,
+      "params": [
+        {
+          "name": "HighestMeanIncome",   // Parameter name
+          "value": 0,
+          "bind": {
+            "input": "range",
+            "min": 0,
+            "max": 15000,
+            "step": 500,                // Step size for smoother slider
+            "name": "Mean Income Filter: "
+          }
+        }
+      ],
+      
+      "layer": [{
+      "data": {
+        "url": "./js/malaysia-states.topojson", // Ensure the correct path
+        "format": {"type": "topojson", "feature": "states"}
+      },
+      "projection": {"type": "equalEarth"},
+      "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "black"},
+      "encoding": {
+        "tooltip": {"field": "properties.Name", "type": "nominal"}
+      }
+    },
+    {
+  "data": {
+    "url": "./js/malaysia-states.topojson", 
+    "format": {"type": "topojson", "feature": "states"} // Ensure correct feature extraction
+  },
+  "transform": [
+    {
+      "lookup": "properties.Name", // Correct field name from TopoJSON
+      "from": {
+        "data": {
+          "url": "./data/hies_state.csv", // CSV data file path
+          "format": {"type": "csv"} // CSV format
+        },
+        "key": "state", // Field from the CSV file to match
+        "fields": ["income_mean", "income_median", "expenditure_mean", "gini", "poverty"]
+      }
+    },
+    {
+      "calculate": "isValid(datum.income_mean) ? datum.income_mean : null", // Optional: Handle missing values
+      "as": "MeanIncome" // Assign to a new field for coloring
+    },
+    
+  ],
+  "mark": {"type": "geoshape"},
+          "encoding": {
+            "color": {
+              "condition": {
+                "test": "datum.MeanIncome >= HighestMeanIncome",  // Condition to color based on slider value
+                "field": "MeanIncome",  // Field to use for coloring if condition is met
+                "type": "quantitative",
+                "scale": {"scheme": "browns"},
+                "title": "Mean Income (RM)"
+              },
+              "value": "lightgrey"  // Color for states that don't meet the condition
+            },
+            "tooltip": [
+              {"field": "properties.Name", "type": "nominal", "title": "State"}, // Tooltip showing state name from TopoJSON
+              {"field": "income_mean", "type": "quantitative", "title": "Mean Income"},
+              {"field": "income_median", "type": "quantitative", "title": "Median Income"},
+              {"field": "expenditure_mean", "type": "quantitative", "title": "Mean Expenditure"},
+              {"field": "gini", "type": "quantitative", "title": "Gini Coefficient"},
+              {"field": "poverty", "type": "quantitative", "title": "Poverty (%)"}
+            ]
+          }
+        },
+        {
+          "data": {
+            "values": [
+              {"state": "Kuala Lumpur", "longitude": 101.6869, "latitude": 3.1390},
+              {"state": "Selangor", "longitude": 100.3869, "latitude": 3.1390},
+              {"state": "Penang", "longitude": 100.3294, "latitude": 5.4141},
+              {"state": "Johor", "longitude": 102.7618, "latitude": 1.9854},
+              {"state": "Sarawak", "longitude": 110.0335, "latitude": 2.5533}
+            ]
+          },
+          "mark": {
+            "type": "text",
+            "align": "left",
+            "baseline": "middle",
+            "dx": 5,
+            "dy": -5,
+            "fontSize": 12,
+            "fontWeight": "bold",
+            "color": "black"
+          },
+          "encoding": {
+            "longitude": {"field": "longitude", "type": "quantitative"},
+            "latitude": {"field": "latitude", "type": "quantitative"},
+            "text": {"field": "state", "type": "nominal"}
+          }
+        }
+ 
+      ], // end of the layer
+      "config": {
+    "background": "#b3e5fc" // Light blue background for ocean
+  }
+    };
+
+    // maps
+
+    // Visualization 3: Placeholder for the third visualization
+    const spec3 = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "width": 600,
+      "height": 400,
+      "title": "Malaysia district household income",
+      "data": {
+        "url": "./data/hies_district.csv"
+      },
+      "params": [
+    {
+      "name": "State_selection",
+      "bind": {
+        "input": "select",
+        "options": [null,"Johor", "Kedah", "Kelantan", "Melaka", "Negeri Sembilan",
+              "Pahang", "Penang", "Perak", "Perlis", "Selangor",
+              "Terengganu", "Sabah", "Sarawak", "Kuala Lumpur", "Labuan", "Putrajaya"
+            ],
+        "labels": ["Show All","Johor", "Kedah", "Kelantan", "Melaka", "Negeri Sembilan",
+              "Pahang", "Penang", "Perak", "Perlis", "Selangor",
+              "Terengganu", "Sabah", "Sarawak", "Kuala Lumpur", "Labuan", "Putrajaya"
+            ],
+        "name": "State Selection: "
+      }
+    }
+  ],
+  "transform": [
+    {
+      "filter": "State_selection == null || datum.state == State_selection"
+    }
+  ],
+      "layer": [
+        {
+          "mark": "circle",
+          "encoding": {
+            "x": {
+              "field": "income_mean",
+              "type": "quantitative",
+              "axis": {"title": "Income mean of household"},
+              "scale": {"type": "log", "domain": [3000, 14000]}
+            },
+            "y": {
+              "field": "expenditure_mean",
+              "type": "quantitative",
+              "axis": {"title": "Expenditure mean of household"},
+              "scale": {"type": "log", "domain": [2000, 10000]}
+            },
+            "size": {
+              "field": "poverty",
+              "type": "quantitative",
+              "scale": {"range": [10, 500]},
+              "legend": {"title": "Poverty percentage of districts"}
+            },
+            "color": {
+              "field": "state",
+              "type": "nominal",
+              "legend": {"title": "state"},
+              "scale": {
+                "domain": [
+              "Johor", "Kedah", "Kelantan", "Melaka", "Negeri Sembilan",
+              "Pahang", "Penang", "Perak", "Perlis", "Selangor",
+              "Terengganu", "Sabah", "Sarawak", "Kuala Lumpur", "Labuan", "Putrajaya"
+            ],
+            "range": [
+              "#e41a1c", "#377eb8", "#4daf4a", "#ff7f00", "#984ea3",
+              "#ffff33", "#a65628", "#f781bf", "#999999", "#66c2a5",
+              "#fc8d62", "#8da0cb", "#e78ac3", "#a6d854", "#ffd92f", "#b3e2cd"
+            ]
+          }
+        },
+            "opacity": {
+              "value": 0.6
+            },
+            "size": {
+              "field": "poverty",
+              "type": "quantitative",
+              "scale": {
+                "type": "threshold",
+                "domain": [5, 10, 20, 30, 40,60],
+                "range": [100, 300, 800, 1000, 1500, 2000]
+              },
+              "legend": {"format": ".1s"}
+            },
+            "tooltip": [
+            {"field": "state", "type": "nominal", "title": "State"},
+          {"field": "district", "type": "nominal", "title": "District"},
+          {"field": "income_mean", "type": "quantitative", "title": "Mean Income (RM)"},
+          {"field": "expenditure_mean", "type": "quantitative", "title": "Mean Expenditure (RM)"},
+          {"field": "poverty", "type": "quantitative", "title": "Poverty (%)"}
+        ]
+          }
+        }
+      ], // This is where the "layer" array closes
+      "config": {
+    "background": "beige" }
+    };
+
+    //stacked bar chart 
+    // Visualization 4: Placeholder for the fourth visualization
+    const spec4 = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "width": 600, 
+      "height": 400,
+      "title": "Mean income and median income of Malaysians (1970-2022)",
+      "data": {
+        "url": "./data/hh_income.csv",  // Your CSV file path
+        "format": {"type": "csv"}
+      },
+      "layer": [
+        {
+          "mark": "bar",  // Bar chart for income_mean
+          "encoding": {
+            "x": {
+              "field": "date",
+              "type": "ordinal",
+              "timeUnit": "year",
+              "axis": {"format": "%Y", "title": "Year"}
+            },
+            "y": {
+              "field": "income_mean",
+              "type": "quantitative",
+              "title": "Income Mean"
+            },
+            "color": {
+              "value": "#4682b4"  // Blue color for bars
+            },
+            "tooltip": [
+              {"field": "date", "title": "Year", "type": "temporal", "format": "%Y"},
+              {"field": "income_mean", "title": "Income Mean"}
+            ]
+          }
+        },
+        {
+          "mark": {
+            "type": "line",
+            "point": true,  // Line graph with points for income_median
+            "color": "red"
+          },
+          "encoding": {
+            "x": {
+              "field": "date",
+              "type": "temporal",
+              "timeUnit": "year"
+            },
+            "y": {
+              "field": "income_median",
+              "type": "quantitative",
+              "title": "Income Median"
+            },
+            "tooltip": [
+              {"field": "date", "title": "Year", "type": "temporal", "format": "%Y"},
+              {"field": "income_median", "title": "Income Median"}
+            ]
+          }
+        }
+      ],
+      "resolve": {
+        "scale": {"y": "independent"}  // Independent y-axes for bar and line
+      }, // This is where the "layer" array closes
+      "config": {
+    "background": "pink" }
+    };
+
+//area line chart
+
+    // Spec for the fifth visual
+    const spec5 = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "title": "Poverty Rates in Malaysia (1970-2022)",
+      "width": 600, 
+      "height": 400,
+      "data": {
+        "url": "./data/hh_poverty.csv", // Replace with the path to your CSV file
+        "format": {"type": "csv"}
+      },
+      "transform": [
+        // Fold the columns poverty_absolute, poverty_hardcore, and poverty_relative
+        {"fold": ["poverty_absolute", "poverty_hardcore", "poverty_relative"], "as": ["PovertyType", "PovertyRate"]}
+      ],
+      "layer": [
+        {
+          "mark": "line",
+          "encoding": {
+            "x": {
+              "field": "date", 
+              "type": "temporal",  // Use temporal for proper date handling
+              "axis": { "format": "%Y", "title": "Year" }
+            },
+            "y": {
+              "field": "PovertyRate", 
+              "type": "quantitative", 
+              "title": "Poverty Rate (%)"
+            },
+            "color": {
+              "field": "PovertyType",
+              "type": "nominal",
+              "title": "Poverty Type",
+              "scale": {
+                "domain": ["poverty_absolute", "poverty_hardcore", "poverty_relative"],
+                "range": ["#1f77b4", "#ff7f0e", "#2ca02c"]
+              }
+            }
+          }
+        },
+        {
+          "mark": "point",  // Add points on top of the line graph
+          "encoding": {
+            "x": {
+              "field": "date", 
+              "type": "temporal"  // Use temporal to match line encoding
+            },
+            "y": {
+              "field": "PovertyRate", 
+              "type": "quantitative"
+            },
+            "color": {
+              "field": "PovertyType",
+              "type": "nominal"
+            },
+            "tooltip": [
+              {"field": "date", "type": "temporal", "title": "Date", "format": "%Y"},
+              {"field": "PovertyRate", "type": "quantitative", "title": "Poverty Rate (%)"},
+              {"field": "PovertyType", "type": "nominal", "title": "Poverty Type"}
+            ]
+          }
+        }
+      ], // This is where the "layer" array closes
+      "config": {
+    "background": "beige" }
+    };
+
+    // Multi line chart
+    const spec6 = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "vconcat": [
+        {
+          // Top Area Chart (Labor Force Metrics)
+          "width": 1000,
+          "height": 300,
+          "data": {
+            "url": "./data/lfs_month.csv",  // Ensure the path to CSV is correct
+            "format": {"type": "csv"}
+          },
+          "transform": [
+            {
+              "fold": [
+                "lf", "lf_employed", "lf_unemployed", "lf_outside"  // Top half variables
+              ], 
+              "as": ["category", "value"]
+            }
+          ],
+          "layer": [
+            {
+              "mark": {
+                "type": "area", 
+                "interpolate": "basis",  // Use "basis" interpolation for smoother curves
+                "opacity": 0.7  // Add transparency to make overlapping areas visible
+              },
+              "encoding": {
+                "x": {
+                  "field": "date", 
+                  "type": "temporal", 
+                  "axis": {"format": "%b %Y", "title": "Date"}
+                },
+                "y": {
+                  "field": "value", 
+                  "type": "quantitative",
+                  "stack": null,  // Disable stacking to show individual values
+                  "axis": {"title": "Labor Force Metrics"},
+                  //"scale": {"type": "linear", "domain": [0, 10000000]}  // Adjust y-axis domain
+                },
+                "color": {
+                  "field": "category",
+                  "type": "nominal",
+                  "scale": {"range": ["#E41A1C", "#377EB8", "#4DAF4A", "#984EA3"]},  // Custom colors for areas
+                  "legend": {"title": "Category"}
+                }
+              }
+            },
+            {
+              // Add black points to make the data clearer and more interactive
+              "mark": {"type": "point", "size": 10, "color": "black", "tooltip": true},  // Points are black
+              "encoding": {
+                "x": {
+                  "field": "date", 
+                  "type": "temporal"
+                },
+                "y": {
+                  "field": "value", 
+                  "type": "quantitative"
+                },
+                "tooltip": [
+                  {"field": "category", "type": "nominal", "title": "Category"},
+                  {"field": "value", "type": "quantitative", "title": "Value"},
+                  {"field": "date", "type": "temporal", "title": "Date"}
+                ]
+              }
+            }
+          ]
+        },
+        {
+          // Bottom Area Chart (Rates)
+          "width": 1000,
+          "height": 300,
+          "data": {
+            "url": "./data/lfs_month.csv",  // Ensure the path to CSV is correct
+            "format": {"type": "csv"}
+          },
+          "transform": [
+            {
+              "fold": [
+                "p_rate", "ep_ratio", "u_rate"  // Bottom half variables
+              ], 
+              "as": ["category", "value"]
+            }
+          ],
+          "layer": [
+            {
+              "mark": {
+                "type": "area", 
+                "interpolate": "basis",  // Use "basis" interpolation for smoother curves
+                "opacity": 0.7  // Add transparency to make overlapping areas visible
+              },
+              "encoding": {
+                "x": {
+                  "field": "date", 
+                  "type": "temporal", 
+                  "axis": {"format": "%b %Y", "title": "Date"}
+                },
+                "y": {
+                  "field": "value", 
+                  "type": "quantitative",
+                  "stack": null,  // Disable stacking to show individual values
+                  "axis": {"title": "Rates"},
+                  "scale": {"type": "linear", "domain": [0, 100]}  // Adjust y-axis domain
+                },
+                "color": {
+                  "field": "category",
+                  "type": "nominal",
+                  "scale": {"range": ["#A65628", "#F781BF", "#999999"]},  // Custom colors for areas
+                  "legend": {"title": "Category"}
+                }
+              }
+            },
+            {
+              // Add black points to the bottom chart as well
+              "mark": {"type": "point", "size": 10, "color": "black", "tooltip": true},  // Points are black
+              "encoding": {
+                "x": {
+                  "field": "date", 
+                  "type": "temporal"
+                },
+                "y": {
+                  "field": "value", 
+                  "type": "quantitative"
+                },
+                "tooltip": [
+                  {"field": "category", "type": "nominal", "title": "Category"},
+                  {"field": "value", "type": "quantitative", "title": "Value"},
+                  {"field": "date", "type": "temporal", "title": "Date"}
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    };
+
+    // Embed all the visualizations
+    vegaEmbed('#vis1', spec1, {"actions": false});
+    vegaEmbed('#vis2', spec2, {"actions": false});
+    vegaEmbed('#vis3', spec3, {"actions": false});
+    vegaEmbed('#vis4', spec4, {"actions": false});
+    vegaEmbed('#vis5', spec5, {"actions": false});
+    vegaEmbed('#vis6', spec6, {"actions": false});
+
+  </script>
+
+</body>
+
+</html>

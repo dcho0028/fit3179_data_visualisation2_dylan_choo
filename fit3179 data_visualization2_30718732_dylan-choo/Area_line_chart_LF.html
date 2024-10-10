@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.22.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.2.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.20.8"></script>   
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    const spec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "vconcat": [
+        {
+          // Top Area Chart (Labor Force Metrics)
+          "width": 1000,
+          "height": 300,
+          "data": {
+            "url": "./data/lfs_month.csv",  // Ensure the path to CSV is correct
+            "format": {"type": "csv"}
+          },
+          "transform": [
+            {
+              "fold": [
+                "lf", "lf_employed", "lf_unemployed", "lf_outside"  // Top half variables
+              ], 
+              "as": ["category", "value"]
+            }
+          ],
+          "layer": [
+            {
+              "mark": {
+                "type": "area", 
+                "interpolate": "basis",  // Use "basis" interpolation for smoother curves
+                "opacity": 0.7  // Add transparency to make overlapping areas visible
+              },
+              "encoding": {
+                "x": {
+                  "field": "date", 
+                  "type": "temporal", 
+                  "axis": {"format": "%b %Y", "title": "Date"}
+                },
+                "y": {
+                  "field": "value", 
+                  "type": "quantitative",
+                  "stack": null,  // Disable stacking to show individual values
+                  "axis": {"title": "Labor Force Metrics"},
+                  //"scale": {"type": "linear", "domain": [0, 10000000]}  // Adjust y-axis domain
+                },
+                "color": {
+                  "field": "category",
+                  "type": "nominal",
+                  "scale": {"range": ["#E41A1C", "#377EB8", "#4DAF4A", "#984EA3"]},  // Custom colors for areas
+                  "legend": {"title": "Category"}
+                }
+              }
+            },
+            {
+              // Add black points to make the data clearer and more interactive
+              "mark": {"type": "point", "size": 10, "color": "black", "tooltip": true},  // Points are black
+              "encoding": {
+                "x": {
+                  "field": "date", 
+                  "type": "temporal"
+                },
+                "y": {
+                  "field": "value", 
+                  "type": "quantitative"
+                },
+                "tooltip": [
+                  {"field": "category", "type": "nominal", "title": "Category"},
+                  {"field": "value", "type": "quantitative", "title": "Value"},
+                  {"field": "date", "type": "temporal", "title": "Date"}
+                ]
+              }
+            }
+          ]
+        },
+        {
+          // Bottom Area Chart (Rates)
+          "width": 1000,
+          "height": 300,
+          "data": {
+            "url": "./data/lfs_month.csv",  // Ensure the path to CSV is correct
+            "format": {"type": "csv"}
+          },
+          "transform": [
+            {
+              "fold": [
+                "p_rate", "ep_ratio", "u_rate"  // Bottom half variables
+              ], 
+              "as": ["category", "value"]
+            }
+          ],
+          "layer": [
+            {
+              "mark": {
+                "type": "area", 
+                "interpolate": "basis",  // Use "basis" interpolation for smoother curves
+                "opacity": 0.7  // Add transparency to make overlapping areas visible
+              },
+              "encoding": {
+                "x": {
+                  "field": "date", 
+                  "type": "temporal", 
+                  "axis": {"format": "%b %Y", "title": "Date"}
+                },
+                "y": {
+                  "field": "value", 
+                  "type": "quantitative",
+                  "stack": null,  // Disable stacking to show individual values
+                  "axis": {"title": "Rates"},
+                  "scale": {"type": "linear", "domain": [0, 100]}  // Adjust y-axis domain
+                },
+                "color": {
+                  "field": "category",
+                  "type": "nominal",
+                  "scale": {"range": ["#A65628", "#F781BF", "#999999"]},  // Custom colors for areas
+                  "legend": {"title": "Category"}
+                }
+              }
+            },
+            {
+              // Add black points to the bottom chart as well
+              "mark": {"type": "point", "size": 10, "color": "black", "tooltip": true},  // Points are black
+              "encoding": {
+                "x": {
+                  "field": "date", 
+                  "type": "temporal"
+                },
+                "y": {
+                  "field": "value", 
+                  "type": "quantitative"
+                },
+                "tooltip": [
+                  {"field": "category", "type": "nominal", "title": "Category"},
+                  {"field": "value", "type": "quantitative", "title": "Value"},
+                  {"field": "date", "type": "temporal", "title": "Date"}
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    };
+
+    vegaEmbed("#vis", spec).then(console.log).catch(console.warn);
+  </script>
+</body>
+</html>

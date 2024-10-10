@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.22.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.2.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.20.8"></script>
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    const spec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "title": "Map of Malaysia",
+      "width": 800,
+      "height": 600,
+      "params": [
+        {
+          "name": "HighestMeanIncome",   // Parameter name
+          "value": 0,
+          "bind": {
+            "input": "range",
+            "min": 0,
+            "max": 15000,
+            "step": 500,                // Step size for smoother slider
+            "name": "Mean Income Filter: "
+          }
+        }
+      ],
+      "transform": [
+        {
+          "filter": "datum.income_mean >= HighestMeanIncome"  // Filter based on slider
+        }
+      ],
+      "layer": [{
+      "data": {
+        "url": "./js/malaysia-states.topojson", // Ensure the correct path
+        "format": {"type": "topojson", "feature": "states"}
+      },
+      "projection": {"type": "equalEarth"},
+      "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "black"},
+      "encoding": {
+        "tooltip": {"field": "properties.Name", "type": "nominal"}
+      }
+    },
+    {
+  "data": {
+    "url": "./js/malaysia-states.topojson", 
+    "format": {"type": "topojson", "feature": "states"} // Ensure correct feature extraction
+  },
+  "transform": [
+    {
+      "lookup": "properties.Name", // Correct field name from TopoJSON
+      "from": {
+        "data": {
+          "url": "./data/hies_state.csv", // CSV data file path
+          "format": {"type": "csv"} // CSV format
+        },
+        "key": "state", // Field from the CSV file to match
+        "fields": ["income_mean", "income_median", "expenditure_mean", "gini", "poverty"]
+      }
+    },
+    {
+      "calculate": "isValid(datum.income_mean) ? datum.income_mean : null", // Optional: Handle missing values
+      "as": "MeanIncome" // Assign to a new field for coloring
+    },
+    
+  ],
+  "mark": {"type": "geoshape"},
+  "encoding": {
+    "color": {
+      "field": "MeanIncome", // Use the calculated MeanIncome field for coloring
+      "type": "quantitative",
+      "scale": {"scheme": "browns"},
+      "title": "Mean Income (RM)"
+    },
+    "tooltip": [
+      {"field": "properties.Name", "type": "nominal", "title": "State"}, // Tooltip showing state name from TopoJSON
+      {"field": "income_mean", "type": "quantitative", "title": "Mean Income"},
+      {"field": "income_median", "type": "quantitative", "title": "Median Income"},
+      {"field": "expenditure_mean", "type": "quantitative", "title": "Mean Expenditure"},
+      {"field": "gini", "type": "quantitative", "title": "Gini Coefficient"},
+      {"field": "poverty", "type": "quantitative", "title": "Poverty (%)"}
+    ]
+  }
+}
+ 
+      ],
+      "config": {
+    "background": "#b3e5fc" // Light blue background for ocean
+  }
+    };
+
+    vegaEmbed("#vis", spec, {mode: "vega-lite"}).then(console.log).catch(console.warn);
+  </script>
+</body>
+</html>
+
+
+
+bubbleplot
+
+,
+        {
+          "mark": {
+            "type": "text",
+            "align": "right",
+            "baseline": "middle",
+            "dx": -12,
+            "fontSize": 11.5,
+            "fontStyle": "italic"
+          },
+          "encoding": {
+            "x": {
+      "field": "Area (km²)",    // Same field used for x-position of the circles
+      "type": "quantitative"
+    },
+    "y": {
+      "field": "Density (per km²)",  // Same field used for y-position of the circles
+      "type": "quantitative"
+    },
+            "text": {"field": "Country/Territory", "type": "nominal"},
+            "color": {"value": "black"},
+            "opacity": {
+              "condition": {
+                "test": "datum['Country/Territory'] == 'China' || datum['Country/Territory'] =='Singapore' || datum['Country/Territory'] == 'Australia' || datum['Country/Territory'] =='New Zealand' || datum['Country/Territory'] == 'Italy' || datum['Country/Territory'] =='Yemen' || datum['Country/Territory'] == 'United States'",
+                "value": 1
+              },
+              "value": 0
+            },
+            "tooltip": [
+              {"field": "Country/Territory", "type": "nominal", "title": "Country"},
+              {"field": "2022 Population", "type": "quantitative", "title": "Population (2022)", "format": ","},
+              {"field": "Density (per km²)", "type": "quantitative", "title": "Density (per km²)", "format": ".2f"},
+              {"field": "Area (km²)", "type": "quantitative", "title": "Area (km²)", "format": ","}
+            ]
+          }
+        }
+
+
+stream graph
+
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.22.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.2.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.20.8"></script>   
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    const spec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "width": 600,
+      "height": 400,
+      "data": {
+        "url": "./data/lfs_month.csv",  // Path to your CSV file
+        "format": {"type": "csv"}
+      },
+      "transform": [
+        {
+          "fold": [
+            "lf", "lf_employed", "lf_unemployed", "lf_outside",  // Top half variables
+            "p_rate", "ep_ratio", "u_rate"  // Bottom half variables
+          ], 
+          "as": ["category", "value"]
+        },
+        {
+          "calculate": "datum.category == 'lf' || datum.category == 'lf_employed' || datum.category == 'lf_unemployed' || datum.category == 'lf_outside' ? 'Top' : 'Bottom'",
+          "as": "half"
+        }
+      ],
+      "layer": [
+        {
+          "mark": {"type": "area", "interpolate": "monotone"},
+          "encoding": {
+            "x": {
+              "field": "date", 
+              "type": "temporal", 
+              "axis": {"format": "%b %Y", "title": "Date"}
+            },
+            "y": {
+              "aggregate": "sum", 
+              "field": "value", 
+              "type": "quantitative",
+              "stack": "center",  // This is what makes it a stream graph
+              "axis": {"title": "Labor Force Metrics"}
+            },
+            "color": {
+              "field": "category",
+              "type": "nominal",
+              "scale": {"scheme": "category20b"},  // Color scheme for top section
+              "legend": {"title": "Category"}
+            },
+            "opacity": {"condition": {"test": "datum.half == 'Top'", "value": 1}, "value": 0}
+          }
+        },
+        {
+          "mark": {"type": "area", "interpolate": "monotone"},
+          "encoding": {
+            "x": {
+              "field": "date", 
+              "type": "temporal", 
+              "axis": {"format": "%b %Y", "title": "Date"}
+            },
+            "y": {
+              "aggregate": "sum", 
+              "field": "value", 
+              "type": "quantitative",
+              "stack": "center",
+              "axis": {"title": "Rates"}
+            },
+            "color": {
+              "field": "category",
+              "type": "nominal",
+              "scale": {"scheme": "category10"},  // Different color scheme for bottom section
+              "legend": {"title": "Category"}
+            },
+            "opacity": {"condition": {"test": "datum.half == 'Bottom'", "value": 1}, "value": 0}
+          }
+        }
+      ]
+    };
+
+    vegaEmbed("#vis", spec).then(console.log).catch(console.warn);
+  </script>
+</body>
+</html>

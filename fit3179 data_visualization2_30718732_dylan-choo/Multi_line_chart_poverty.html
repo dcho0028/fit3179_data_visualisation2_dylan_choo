@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.22.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.2.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.20.8"></script>   
+</head>
+<body>
+  <div id="vis"></div>
+  <script>
+    const spec = {
+      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+      "title": "Poverty Rates in Malaysia (1970-2022)",
+      "width": 600, 
+      "height": 400,
+      "data": {
+        "url": "./data/hh_poverty.csv", // Replace with the path to your CSV file
+        "format": {"type": "csv"}
+      },
+      "transform": [
+        // Fold the columns poverty_absolute, poverty_hardcore, and poverty_relative
+        {"fold": ["poverty_absolute", "poverty_hardcore", "poverty_relative"], "as": ["PovertyType", "PovertyRate"]}
+      ],
+      "layer": [
+        {
+          "mark": "line",
+          "encoding": {
+            "x": {
+              "field": "date", 
+              "type": "temporal",  // Use temporal for proper date handling
+              "axis": { "format": "%Y", "title": "Year" }
+            },
+            "y": {
+              "field": "PovertyRate", 
+              "type": "quantitative", 
+              "title": "Poverty Rate (%)"
+            },
+            "color": {
+              "field": "PovertyType",
+              "type": "nominal",
+              "title": "Poverty Type",
+              "scale": {
+                "domain": ["poverty_absolute", "poverty_hardcore", "poverty_relative"],
+                "range": ["#1f77b4", "#ff7f0e", "#2ca02c"]
+              }
+            }
+          }
+        },
+        {
+          "mark": "point",  // Add points on top of the line graph
+          "encoding": {
+            "x": {
+              "field": "date", 
+              "type": "temporal"  // Use temporal to match line encoding
+            },
+            "y": {
+              "field": "PovertyRate", 
+              "type": "quantitative"
+            },
+            "color": {
+              "field": "PovertyType",
+              "type": "nominal"
+            },
+            "tooltip": [
+              {"field": "date", "type": "temporal", "title": "Date", "format": "%Y"},
+              {"field": "PovertyRate", "type": "quantitative", "title": "Poverty Rate (%)"},
+              {"field": "PovertyType", "type": "nominal", "title": "Poverty Type"}
+            ]
+          }
+        }
+      ]
+    };
+
+    vegaEmbed("#vis", spec).then(console.log).catch(console.warn);
+  </script>
+</body>
+</html>
