@@ -14,7 +14,7 @@
   <!-- Optional: Add custom styles for better control -->
   <style>
     .page {
-      padding: 20px;
+      padding: 10px;
     }
 
     .pure-g {
@@ -101,21 +101,29 @@
       </div>
     </div>
 
-    <!-- Middle Section: Two visuals side by side -->
-    <div class="pure-g visual-section">
-      <div class="pure-u-1-2">
-        <div class="description">
-          <h2>Household Mean Income by State in Malaysia 2022</h2>
-          <p>This map shows household mean income, median income and expenditure by state.
-            With the showcase filter of having to see which state in Malaysia have the most mean income. Moreover on the right,
-            it showcases the district of the given 14 states in the country Malaysia showing the much more breakdown of mean income 
-            in the state with the representing districts. With the filtering option below it allows the user to select which state with their 
-            districts have that given mean and median incomes.
-          </p>
-        </div>
+<!-- Middle Section: Visual on left, description on right -->
+<div class="pure-g visual-section">
+
+</div>
+  <div class="pure-u-1-2">
+    <!-- Center the visual -->
+    <div id="vis2" class="vis-container visual-large" style="margin: 0 auto;"></div>
+  </div>
+  <div class="pure-u-1-5">
+    <div class="description">
+      <h2>Household Mean Income by State in Malaysia 2022</h2>
+      <p>This map shows household mean income, median income, and expenditure by state.
+        It allows users to explore which state in Malaysia has the highest mean income. 
+        The breakdown of mean income for districts within each state is shown on the right.
+      </p>
+    </div>
+  </div>
+</div>
+<div class="pure-g visual-section">
+          <div class="pure-u-1-2">
         <div id="vis2" class="vis-container visual-medium"></div>
       </div>
-      <div class="pure-u-1-2">
+      <div class="pure-u-1-3">
         <div class="description">
           <h2>Household mean and median income by states and district in Malaysia 2022</h2>
           
@@ -130,7 +138,8 @@
         <div class="description">
           <h2>Mean and median income of Malaysians from the year 1970-2022</h2>
           <p>This graph showcases the income mean and median of Malaysian househole
-            thorughout the year 1970 to 2022 .</p>
+            thorughout the year 1970 to 2022. With that, it shows 
+            malaysians household trends in how much in average malaysians earn in those years</p>
         </div>
         <div id="vis4" class="vis-container visual-medium"></div>
       </div>
@@ -158,12 +167,44 @@
           </p>
       </div>
       <div class="pure-u-1-2">
-        <div id="vis6" class="vis-container visual-large"></div>
-        </p>
+        <div id="vis6" class="vis-container visual-large">
+
+        </div>
+        <div class="pure-g visual-section">
+          <div class="pure-u-1-1">
+            <div class="description">
+        <p> For the given names of the labour force metrics and rates
+        lf (Float) stands for the Labour Force Size, lf_employed (Float)
+        is Employed Persons, lf_unemployed (Float) is Unemployed Persons ,lf_outside (Float) is Persons outside Labour Force Unemployed Persons,
+        u_rate (Float) is Unemployment Rate, p_rate (Float) is Participation Rate, ep_ratio (Float) is Employment-Population Ratio
+      </p>
       </div>
     </div>
 
   </div>
+</div>
+</div>
+
+</div>
+  <!-- Section for Name and Sources -->
+<div class="pure-g visual-section">
+  <div class="pure-u-1-1">
+    <div class="description">
+      <!-- Creator Information -->
+      <h4>Created by: Dylan Choo</h4>
+      <p><strong>Sources:</strong></p>
+      <ul>
+        <li><a href="https://data.gov.my/data-catalogue/hies_state" target="_blank">Source 1: Household Income and Expenditure</a></li>
+        <li><a href="https://data.gov.my/data-catalogue/hh_income" target="_blank">Source 2: Household income Malaysia</a></li>
+        <li><a href="https://data.gov.my/data-catalogue/hh_poverty" target="_blank">Source 3: Percentage poverty malaysia</a></li>
+        <li><a href="https://data.gov.my/data-catalogue/population_malaysia" target="_blank">Source 4: Population Malaysia </a></li>
+        <li><a href="https://data.gov.my/data-catalogue/hies_district" target="_blank">Source 5: Household income and expenditure by district Malaysia</a></li>
+        <li><a href="https://data.gov.my/data-catalogue/lfs_year" target="_blank">Source 6: Annual Principal Labour Force Statistics</a></li>
+
+      </ul>
+    </div>
+  </div>
+</div>
 
   <script type="text/javascript">
 
@@ -172,16 +213,19 @@
     // Visualization 1: Bar chart + Line graph for income
     const spec1 = {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "title": "Population by Age, Ethnicity, and Sex",
+  "title": "Population by Age and Sex with Ethnicity",
   "width": 800,
   "height": 400,
   "data": {
     "url": "./data/2022_population_malaysia.csv"
   },
   "transform": [
-  {
-    "filter": "datum.age != 'overall'"
-  },
+    {
+      "filter": "datum.age != 'overall'"
+    },
+    {
+      "filter": "datum.sex != 'both'"  // Filter to exclude the "both" category
+    },
     {
       "aggregate": [
         {
@@ -200,14 +244,14 @@
   "mark": "bar",
   "encoding": {
     "x": {
-    "field": "age",
-    "type": "nominal",
-    "sort": [
-      "0-4", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34", "35-39", 
-      "40-44", "45-49", "50-54", "55-59", "60-64", "65-69", "70-74", "75-79", "80+"
-    ],
-    "title": "Age"
-  },
+      "field": "age",
+      "type": "nominal",
+      "sort": [
+        "0-4", "5-9", "10-14", "15-19", "20-24", "25-29", "30-34", "35-39", 
+        "40-44", "45-49", "50-54", "55-59", "60-64", "65-69", "70-74", "75-79", "80+"
+      ],
+      "title": "Age"
+    },
     "y": {
       "field": "display_population",
       "type": "quantitative",
@@ -221,15 +265,22 @@
       "type": "nominal",
       "title": "Sex",
       "scale": {
-        "range": ["#FF5733", "#33FF57", "#3357FF"]
+        "range": ["#FF5733", "blue"]  // Adjusted color for male and female
       }
     },
-    
+    "opacity": {
+      "field": "ethnicity",
+      "type": "nominal",
+      "title": "Ethnicity",
+      "legend": {
+        "title": "Ethnicity (Saturation)"
+      }
+    },
     "tooltip": [
-      {"field": "age", "title": "Age"},
-      {"field": "ethnicity", "title": "Ethnicity"},
-      {"field": "sex", "title": "Gender"},
-      {"field": "display_population", "title": "Population"}
+      { "field": "age", "title": "Age" },
+      { "field": "ethnicity", "title": "Ethnicity" },
+      { "field": "sex", "title": "Gender" },
+      { "field": "display_population", "title": "Population" }
     ]
   },
   "config": {
@@ -237,8 +288,11 @@
       "labelFontSize": 12,
       "titleFontSize": 14
     }
-  }
-};
+  }, // This is where the "layer" array closes
+      "config": {
+    "background": "beige" }
+}
+
 
     //bubbleplot
 
@@ -391,14 +445,17 @@
             "x": {
               "field": "income_mean",
               "type": "quantitative",
-              "axis": {"title": "Income mean of household"},
-              "scale": {"type": "log", "domain": [3000, 14000]}
+              "axis": {"title": "Income mean of household",
+              "values": [0, 3000, 4000, 5000, 6000, 10000, 14000] },
+              "scale": {"type": "log", "domain": [2800, 14000]}
             },
             "y": {
               "field": "expenditure_mean",
               "type": "quantitative",
-              "axis": {"title": "Expenditure mean of household"},
-              "scale": {"type": "log", "domain": [2000, 10000]}
+              "axis": {"title": "Expenditure mean of household",
+                "values": [0, 2000, 3000, 4000, 5000, 8000, 10000]
+              },
+              "scale": {"type": "log", "domain": [1800, 10000]}
             },
             "size": {
               "field": "poverty",
@@ -428,6 +485,7 @@
             },
             "size": {
               "field": "poverty",
+              "title": "Poverty rate (%)",
               "type": "quantitative",
               "scale": {
                 "type": "threshold",
@@ -500,7 +558,8 @@
             "y": {
               "field": "income_median",
               "type": "quantitative",
-              "title": "Income Median"
+              "title": "Income Median",
+              //"colour": "black"
             },
             "tooltip": [
               {"field": "date", "title": "Year", "type": "temporal", "format": "%Y"},
@@ -513,7 +572,7 @@
         "scale": {"y": "independent"}  // Independent y-axes for bar and line
       }, // This is where the "layer" array closes
       "config": {
-    "background": "pink" }
+    "background": "beige" }
     };
 
 //area line chart
@@ -586,140 +645,137 @@
 
     // Multi line chart
     const spec6 = {
-      "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-      "vconcat": [
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "vconcat": [
+    {
+      // Top Area Chart (Labor Force Metrics)
+      "width": 1000,
+      "height": 300,
+      "data": {
+        "url": "./data/lfs_month.csv",
+        "format": {"type": "csv"}
+      },
+      "transform": [
         {
-          // Top Area Chart (Labor Force Metrics)
-          "width": 1000,
-          "height": 300,
-          "data": {
-            "url": "./data/lfs_month.csv",  // Ensure the path to CSV is correct
-            "format": {"type": "csv"}
+          "fold": ["lf", "lf_employed", "lf_unemployed", "lf_outside"],
+          "as": ["metric", "value"]
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "area",
+            "interpolate": "basis",
+            "opacity": 0.7
           },
-          "transform": [
-            {
-              "fold": [
-                "lf", "lf_employed", "lf_unemployed", "lf_outside"  // Top half variables
-              ], 
-              "as": ["category", "value"]
-            }
-          ],
-          "layer": [
-            {
-              "mark": {
-                "type": "area", 
-                "interpolate": "basis",  // Use "basis" interpolation for smoother curves
-                "opacity": 0.7  // Add transparency to make overlapping areas visible
-              },
-              "encoding": {
-                "x": {
-                  "field": "date", 
-                  "type": "temporal", 
-                  "axis": {"format": "%b %Y", "title": "Date"}
-                },
-                "y": {
-                  "field": "value", 
-                  "type": "quantitative",
-                  "stack": null,  // Disable stacking to show individual values
-                  "axis": {"title": "Labor Force Metrics"},
-                  //"scale": {"type": "linear", "domain": [0, 10000000]}  // Adjust y-axis domain
-                },
-                "color": {
-                  "field": "category",
-                  "type": "nominal",
-                  "scale": {"range": ["#E41A1C", "#377EB8", "#4DAF4A", "#984EA3"]},  // Custom colors for areas
-                  "legend": {"title": "Category"}
-                }
-              }
+          "encoding": {
+            "x": {
+              "field": "date",
+              "type": "temporal",
+              "axis": {"format": "%b %Y", "title": "Date"}
             },
-            {
-              // Add black points to make the data clearer and more interactive
-              "mark": {"type": "point", "size": 10, "color": "black", "tooltip": true},  // Points are black
-              "encoding": {
-                "x": {
-                  "field": "date", 
-                  "type": "temporal"
-                },
-                "y": {
-                  "field": "value", 
-                  "type": "quantitative"
-                },
-                "tooltip": [
-                  {"field": "category", "type": "nominal", "title": "Category"},
-                  {"field": "value", "type": "quantitative", "title": "Value"},
-                  {"field": "date", "type": "temporal", "title": "Date"}
-                ]
+            "y": {
+              "field": "value",
+              "type": "quantitative",
+              "stack": null,
+              "axis": {"title": "Labor Force Metrics"}
+            },
+            "color": {
+              "field": "metric",
+              "type": "nominal",
+              "scale": {
+                "domain": ["lf", "lf_employed", "lf_outside","lf_unemployed"],
+                "range": ["#E41A1C", "#377EB8", "#984EA3", "yellow"]  // Ensure color consistency
+              },
+              "legend": {
+                "title": "Labor Force Metrics",
+                "orient": "right",
+                "direction": "vertical"
               }
             }
-          ]
+          }
         },
         {
-          // Bottom Area Chart (Rates)
-          "width": 1000,
-          "height": 300,
-          "data": {
-            "url": "./data/lfs_month.csv",  // Ensure the path to CSV is correct
-            "format": {"type": "csv"}
-          },
-          "transform": [
-            {
-              "fold": [
-                "p_rate", "ep_ratio", "u_rate"  // Bottom half variables
-              ], 
-              "as": ["category", "value"]
-            }
-          ],
-          "layer": [
-            {
-              "mark": {
-                "type": "area", 
-                "interpolate": "basis",  // Use "basis" interpolation for smoother curves
-                "opacity": 0.7  // Add transparency to make overlapping areas visible
-              },
-              "encoding": {
-                "x": {
-                  "field": "date", 
-                  "type": "temporal", 
-                  "axis": {"format": "%b %Y", "title": "Date"}
-                },
-                "y": {
-                  "field": "value", 
-                  "type": "quantitative",
-                  "stack": null,  // Disable stacking to show individual values
-                  "axis": {"title": "Rates"},
-                  "scale": {"type": "linear", "domain": [0, 100]}  // Adjust y-axis domain
-                },
-                "color": {
-                  "field": "category",
-                  "type": "nominal",
-                  "scale": {"range": ["#A65628", "#F781BF", "#999999"]},  // Custom colors for areas
-                  "legend": {"title": "Category"}
-                }
-              }
-            },
-            {
-              // Add black points to the bottom chart as well
-              "mark": {"type": "point", "size": 10, "color": "black", "tooltip": true},  // Points are black
-              "encoding": {
-                "x": {
-                  "field": "date", 
-                  "type": "temporal"
-                },
-                "y": {
-                  "field": "value", 
-                  "type": "quantitative"
-                },
-                "tooltip": [
-                  {"field": "category", "type": "nominal", "title": "Category"},
-                  {"field": "value", "type": "quantitative", "title": "Value"},
-                  {"field": "date", "type": "temporal", "title": "Date"}
-                ]
-              }
-            }
-          ]
+          "mark": {"type": "point", "size": 10, "color": "black", "tooltip": true},
+          "encoding": {
+            "x": {"field": "date", "type": "temporal"},
+            "y": {"field": "value", "type": "quantitative"},
+            "tooltip": [
+              {"field": "metric", "type": "nominal", "title": "Labor Force Metric"},
+              {"field": "value", "type": "quantitative", "title": "Value"},
+              {"field": "date", "type": "temporal", "title": "Date"}
+            ]
+          }
         }
       ]
-    };
+    },
+    {
+      // Bottom Area Chart (Rates)
+      "width": 1000,
+      "height": 300,
+      "data": {
+        "url": "./data/lfs_month.csv",
+        "format": {"type": "csv"}
+      },
+      "transform": [
+        {
+          "fold": ["p_rate", "ep_ratio", "u_rate"],
+          "as": ["rate", "value"]
+        }
+      ],
+      "layer": [
+        {
+          "mark": {
+            "type": "area",
+            "interpolate": "basis",
+            "opacity": 0.7
+          },
+          "encoding": {
+            "x": {
+              "field": "date",
+              "type": "temporal",
+              "axis": {"format": "%b %Y", "title": "Date"}
+            },
+            "y": {
+              "field": "value",
+              "type": "quantitative",
+              "stack": null,
+              "axis": {"title": "Rates"},
+              "scale": {"domain": [0, 100]}
+            },
+            "color": {
+              "field": "rate",
+              "type": "nominal",
+              "scale": {
+                "domain": ["p_rate", "ep_ratio", "u_rate"],
+                "range": ["#A65628", "#F781BF", "#999999"]  // Ensure color consistency
+              },
+              "legend": {
+                "title": "Rates",
+                "orient": "right",
+                "direction": "vertical"
+              }
+            }
+          }
+        },
+        {
+          "mark": {"type": "point", "size": 10, "color": "black", "tooltip": true},
+          "encoding": {
+            "x": {"field": "date", "type": "temporal"},
+            "y": {"field": "value", "type": "quantitative"},
+            "tooltip": [
+              {"field": "rate", "type": "nominal", "title": "Rate"},
+              {"field": "value", "type": "quantitative", "title": "Value"},
+              {"field": "date", "type": "temporal", "title": "Date"}
+            ]
+          }
+        }
+      ]
+    }
+  ], // This is where the "layer" array closes
+      "config": {
+    "background": "beige" }
+};
 
     // Embed all the visualizations
     vegaEmbed('#vis1', spec1, {"actions": false});
